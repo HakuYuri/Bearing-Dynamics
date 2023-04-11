@@ -1,0 +1,18 @@
+function [EnvCurve, EnvSpec, EnvFreqAxis, EnvAlterData] = EnvSpec(MetaSig, FreqSam)
+
+    EnvAlterData = data - mean(data);
+    
+    % 计算Hilbert变换
+    hilb = hilbert(AlterData);
+    
+    % 计算包络
+    EnvCurve = abs(hilb);
+
+    % 去直流
+    envelope1 = EnvCurve - mean(EnvCurve);
+    
+    % 计算谱
+    N = length(AlterData); % 信号长度
+    EnvFreqAxis = (0:N-1)*(fs/N); % 构造频率轴
+    EnvSpec = abs(fft(envelope1)/N); % 计算谱
+end
