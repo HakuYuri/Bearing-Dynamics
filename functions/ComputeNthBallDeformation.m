@@ -1,77 +1,83 @@
 % -------------------------------------------------------------------------
-% Compute the deformation between race and each ball from the total deplac-
-% ement on x and y direction, and return a (1 x n) matrix of defomation, n 
-% is the number of balls.
-% 
-% Last modified 2023.4.10 By WangBowei.
+% Compute the deformation between the raceway and each ball from the total
+% displacement in the x and y directions, considering geometric clearance and 
+% potential faults in the raceway.
+%
+% This function calculates:
+% 1. The initial deformation for each ball based on displacement and clearance.
+% 2. Adjustments to deformation if a fault is present, depending on the type
+%    (outer race fault or inner race fault) and its geometry (depth, position, length).
+%
+% Last modified: 2023.4.10 By WangBowei.
 % ---------------------------------Input-----------------------------------
-% Displacement.x;
-% Displacement.y;
-% BallsPosition = [position1 position2 ...... positionN]
-% IRPosition
-% Clearance;
-% FaultStruct.Type;         % 0: No faults  1: OR fault 2: IR fault
-% FaultStruct.Depth;        % Depth of spall (m)
-% FaultStruct.Position;     % Position of spall, 0 - 2pi
-% FaultStruct.Length;       % Length of spall, 0 - 2pi
+% Displacement.x      - Displacement in the x direction (scalar or vector).
+% Displacement.y      - Displacement in the y direction (scalar or vector).
+% BallsPosition       - A (1 x N) array of angular positions of the balls (in radians).
+% IRPosition          - Angular position of the inner race (in radians).
+% Clearance           - Geometric clearance between the raceway and balls (scalar, in meters).
+% FaultStruct.Type    - Fault type:
+%                       0: No faults
+%                       1: Outer race fault
+%                       2: Inner race fault
+% FaultStruct.Depth   - Depth of the spall (in meters).
+% FaultStruct.Position - Angular position of the spall start (in radians, 0 to 2*pi).
+% FaultStruct.Length  - Angular length of the spall (in radians, 0 to 2*pi).
 % ---------------------------------Output----------------------------------
-% NthBallDeformation = [deformation1 deformation1 ...... deformationN]
+% NthBallDeformation  - A (1 x N) array of deformations for each ball (in meters).
 % -------------------------------------------------------------------------
 
-
 function [NthBallDeformation] = ComputeNthBallDeformation(BallsPosition, IRPosition, Displacement, Clearance, FaultStruct)
-    
-    FaultStruct.Type;
-    FaultStruct.Depth;
-    FaultStruct.Position;
-    FaultStruct.Length;
 
-    AbsoluteBallPosition = mod(BallsPosition, (2 * pi));
+    % Extract fault properties (included here for clarity and future expansion)
+    FaultType = FaultStruct.Type;
+    FaultDepth = FaultStruct.Depth;
+    FaultPosition = FaultStruct.Position;
+    FaultLength = FaultStruct.Length;
 
-    % Compute deformation of Nth ball
-    NthBallDeformation = (Displacement.x .* cos(BallsPosition)) + (Displacement.y .* sin(BallsPosition)) - Clearance;
+    % Ensure ball positions are within [0, 2*pi]
+    AbsoluteBallPosition = mod(BallsPosition, 2 * pi);
 
-    switch FaultStruct.Type
+    % Compute the initial deformation for each ball
+    % Formula: deformation = displacement projection - clearance
+    NthBallDeformation = (Displacement.x .* cos(BallsPosition)) + ...
+                         (Displacement.y .* sin(BallsPosition)) - Clearance;
 
-        case 1
+    % Adjust deformation if a fault is present
+    switch FaultType
+        case 1 % Outer race fault
+            % Define spall angular range
+            SpallPositionMax = FaultPosition + FaultLength;
+            SpallPositionMin = FaultPosition;
 
-            SpallPositionMax = FaultStruct.Position + FaultStruct.Length;
-            SpallPositionMin = FaultStruct.Position;
-        
-            for i = 1 : length(AbsoluteBallPosition(:))
-                
-                if ((AbsoluteBallPosition(i) >= SpallPositionMin) && ...
-                   (AbsoluteBallPosition(i) <= SpallPositionMax))
-        
-                    NthBallDeformation(i) = NthBallDeformation(i) - FaultStruct.Depth;
-        
+            % Check if each ball's position is within the spall
+            for i = 1:length(AbsoluteBallPosition)
+                if AbsoluteBallPosition(i) >= SpallPositionMin && ...
+                   AbsoluteBallPosition(i) <= SpallPositionMax
+                    % Reduce deformation by the fault depth
+                    NthBallDeformation(i) = NthBallDeformation(i) - FaultDepth;
                 end
-        
             end
 
-        case 2
+        case 2 % Inner race fault
+            % Define spall angular range relative to the inner race position
+            SpallPositionMax = mod(IRPosition + FaultPosition + FaultLength, 2 * pi);
+            SpallPositionMin = mod(IRPosition + FaultPosition, 2 * pi);
 
-            SpallPositionMax = mod(IRPosition + FaultStruct.Position + FaultStruct.Length, (2 * pi));
-            SpallPositionMin = mod(IRPosition + FaultStruct.Position, (2 * pi));
-
-
-            for i = 1 : length(AbsoluteBallPosition(:))
-                
-                if ((AbsoluteBallPosition(i) >= SpallPositionMin) && ...
-                   (AbsoluteBallPosition(i) <= SpallPositionMax)) || ...
-                   ((SpallPositionMax < SpallPositionMin) && ...
-                   ((AbsoluteBallPosition(i) >= SpallPositionMin) || ...
-                   (AbsoluteBallPosition(i) <= SpallPositionMax)))
-                    
-                    NthBallDeformation(i) = NthBallDeformation(i) - FaultStruct.Depth;
-
+            % Check if each ball's position is within the spall range
+            for i = 1:length(AbsoluteBallPosition)
+                if (AbsoluteBallPosition(i) >= SpallPositionMin && ...
+                    AbsoluteBallPosition(i) <= SpallPositionMax) || ...
+                   (SpallPositionMax < SpallPositionMin && ...
+                   (AbsoluteBallPosition(i) >= SpallPositionMin || ...
+                    AbsoluteBallPosition(i) <= SpallPositionMax))
+                    % Reduce deformation by the fault depth
+                    NthBallDeformation(i) = NthBallDeformation(i) - FaultDepth;
                 end
-        
             end
-            
     end
 
-    % Prevent non-positive values
+    % Ensure deformations are non-negative
+    % Negative deformations are physically unrealistic
     NthBallDeformation = NthBallDeformation .* heaviside(NthBallDeformation);
 
 end
