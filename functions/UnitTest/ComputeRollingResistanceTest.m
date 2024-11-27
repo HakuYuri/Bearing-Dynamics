@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------------
 % Test program for ComputeNthBallDeformation.m
 % 
-% Last modified 2023.3.22 By WangBowei.
+% Last modified 2023.3.22.
 % -------------------------------------------------------------------------
 
 % Declare IR radius to compute torque.

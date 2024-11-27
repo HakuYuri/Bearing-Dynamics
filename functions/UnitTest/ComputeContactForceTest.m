@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------------
 % Test program for ComputeBallPosition.m
 % 
-% Last modified 2023.3.22 By WangBowei.
+% Last modified 2023.3.22.
 % -------------------------------------------------------------------------
 
 % Initial ball position and deformation.
