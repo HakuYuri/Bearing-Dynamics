@@ -24,13 +24,11 @@
 
 #### model/
 - `BearingDynamicModel.m`：轴承的动力学模型
-$$
-\begin{align*}
-M_{Bearing}\ddot{X} + C_x \dot{X} + K_x X &= F_{\text{Initial},x} + F_{\text{Hertz},x}  \\
-M_{Bearing}\ddot{Y} + C_y \dot{Y} + K_y Y &= F_{\text{Initial},y} + F_{\text{Hertz},y}  \\
-{I_{\text{Equivalent}}} \ddot{\theta} + C_{\text{Outer}} \dot{\theta} &= T_{\text{Input}} + T_{\text{Resistance}}
-\end{align*}
-$$
+
+$$ M_{Bearing}\ddot{X} + C_x \dot{X} + K_x X = F_{\text{Initial},x} + F_{\text{Hertz},x} $$
+$$ M_{Bearing}\ddot{Y} + C_y \dot{Y} + K_y Y = F_{\text{Initial},y} + F_{\text{Hertz},y} $$
+$$ {I_{\text{Equivalent}}} \ddot{\theta} + C_{\text{Outer}} \dot{\theta} = T_{\text{Input}} + T_{\text{Resistance}} $$
+
 
 #### function/
 - `ComputeBallPosition.m`：计算滚动体在指定时间的角位置。
