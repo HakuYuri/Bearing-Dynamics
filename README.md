@@ -51,7 +51,7 @@ $$ {I_{\text{Equivalent}}} \ddot{\theta} + C_{\text{Outer}} \dot{\theta} = T_{\t
 #### Excel Table Fields:
 - **Bearing Parameters** (`A3:H3`): Includes damping, stiffness, mass, radius, number of rolling elements, etc.
 - **System Parameters** (`A7:H7`): Includes outer race damping, equivalent inertia, radial clearance, Hertz contact stiffness, input torque, etc.
-- **Analysis Parameters** (`A12:H12`): Includes simulation time limit and time step.
+- **Analysis Parameters** (`A12:B12`): Includes simulation time limit and time step.
 - **Fault Parameters** (`A16:D16`): Includes fault type, depth, position, and length.
 
 ### 4. Simulation Steps

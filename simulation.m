@@ -32,7 +32,7 @@ BearingPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A3:H3');
 SystemPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A7:H7');
 
 % Load analysis parameters (e.g., time limit, time step, etc.)
-AnaPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A12:H12');
+AnaPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A12:B12');
 
 % Load fault parameters (e.g., fault type, depth, position, length, etc.)
 FaultPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A16:D16');
@@ -79,7 +79,10 @@ fprintf("Simulating...")
 % -------------------------------------------------------------------------
 
 % Save results to the 'results' directory as a .mat file
-save('results\Solution.mat', 'y', 't', 'BearingPara', 'SystemPara', 'FaultPara', 'AnaPara');
+currentTime = datetime('now');
+date_str = string(currentTime, 'yyyyMMdd_HHmmss');
+filepath = 'results\Solution_' + date_str + '.mat';
+save(filepath, 'y', 't', 'BearingPara', 'SystemPara', 'FaultPara', 'AnaPara');
 
 % -------------------------------------------------------------------------
 % Step 6: Run result analysis script
