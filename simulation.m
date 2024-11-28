@@ -26,16 +26,16 @@ clc;
 % -------------------------------------------------------------------------
 
 % Load bearing parameters (e.g., damping, stiffness, radius, mass, etc.)
-BearingPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A3:H3');
+BearingPara = readmatrix('systemparameter/para.xlsx', 'Range', 'A3:H3');
 
 % Load system parameters (e.g., damping, inertia, clearance, etc.)
-SystemPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A7:H7');
+SystemPara = readmatrix('systemparameter/para.xlsx', 'Range', 'A7:H7');
 
 % Load analysis parameters (e.g., time limit, time step, etc.)
-AnaPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A12:B12');
+AnaPara = readmatrix('systemparameter/para.xlsx', 'Range', 'A12:B12');
 
 % Load fault parameters (e.g., fault type, depth, position, length, etc.)
-FaultPara = readmatrix('systemparameter\para.xlsx', 'Range', 'A16:D16');
+FaultPara = readmatrix('systemparameter/para.xlsx', 'Range', 'A16:D16');
 
 % Initialize fault structure
 FaultStruct.Type = FaultPara(1);                    % Fault type
@@ -81,7 +81,7 @@ fprintf("Simulating...")
 % Save results to the 'results' directory as a .mat file
 currentTime = datetime('now');
 date_str = string(currentTime, 'yyyyMMdd_HHmmss');
-filepath = 'results\Solution_' + date_str + '.mat';
+filepath = 'results/Solution_' + date_str + '.mat';
 save(filepath, 'y', 't', 'BearingPara', 'SystemPara', 'FaultPara', 'AnaPara');
 
 % -------------------------------------------------------------------------

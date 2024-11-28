@@ -14,7 +14,7 @@ clc;
 % Load solution data
 fprintf("Reading results...")
 % Use this if you want to use historical data
-load 'results\Solution.mat';
+load 'results/Solution.mat';
 
 % Declare the time limit & time step
 TimeLimit = AnaPara(1);

@@ -1,1 +1,8 @@
 *.asv
+
+# 忽略所有以 Solution_ 开头的 .mat 文件
+results/Solution_*.mat
+
+# 明确允许同步 Solution.mat
+!results/Solution.mat
+
